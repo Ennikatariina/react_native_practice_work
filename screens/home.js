@@ -1,35 +1,38 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {StyleSheet, Text, View, Button, FlatList,TouchableOpacity, Alert} from 'react-native';
 import FormModel from '../components/FormModel.js'
 import threeButtonAlert from '../functions/threeButtonAlert.js';
 import { globalStyles } from '../styles/global.js';
+import { readAllPersons } from '../database/db.js';
+
 
 const Home =()=>{
 
     const [personsList, setPersonsList]=useState([])
     const [visibility, setVisibility]=useState(false)
 
-    //Add the user's information to the list
-    const addPersonalInformationToList= (firstName, lastName, age)=> {
-        setPersonsList (list =>[...list,{firstname:firstName, lastname:lastName, age:age}])
-        console.log(personsList)
-        setVisibility(false) //
+    //Reads the information from the database and puts it in the list 
+    async function readPersonalInformation () {
+       const allPersonsInformation = await readAllPersons() //Reads the information from the database, returns json array which is set to the const allPersonInformation array.
+        setPersonsList(allPersonsInformation) //The information in the allPersonInformation array is set to the state variable
+        setVisibility(false) // make the modelForm invisible
     };
+    //Ei toimi
+    useEffect(()=>{
+        renderItem
+        console.log("useEffect")
+    },[readAllPersons])
 
     //Renders the data in the list one at a time ti the screen
     const renderItem=({item, index}) =>{
         return (
-          <TouchableOpacity onLongPress={()=>threeButtonAlert() }>
+          <TouchableOpacity onLongPress={()=>threeButtonAlert(item.id) }>
           <Text style={styles.itemStyle} key={index}>
             {item.firstname} {item.lastname}, {item.age} vuotta
             </Text>
             </TouchableOpacity>
         )
       }
-      //Open FormModal visible
-    const openModal=() =>{
-        setVisibility(true)
-    }
     //TÄTÄ EI VIELÄ KÄYTETÄ
     //Delete one item from the list and view.
     const deleteItem=(index) =>{
@@ -44,9 +47,9 @@ const Home =()=>{
         <View style={styles.container}>
             <FormModel 
                 visibility={visibility} 
-                addPersonalInformationToList={addPersonalInformationToList} 
+                readPersonalInformation={readPersonalInformation} 
                 modalVisibility={modalVisibility}/>
-            <Button style={globalStyles.oneButtonStyle} title="Add person" onPress={()=> {openModal()}}/>
+            <Button style={globalStyles.oneButtonStyle} title="Add person" onPress={()=> {modalVisibility(true)}}/>
             <View style={styles.listStyle}>
                 <FlatList
                 data={personsList}

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import {StyleSheet, Text, View, TextInput, Button, Modal, FlatList,TouchableOpacity} from 'react-native';
 import { globalStyles } from '../styles/global';
+import { savePerson } from '../database/db';
 
 const FormModel = (props)=>{
 
@@ -20,10 +21,11 @@ const FormModel = (props)=>{
     const ageInputHandler = (enteredText) =>{
         setAge(enteredText)
     }
-    //Add the user's information to the list and clear textInput fields. 
-    const addPersonalInformationToList= ()=> {
-        props.addPersonalInformationToList(firstName, lastName, age)
-        setFirstName('')
+    //Adds the user's information to the database and then retrieves the information from the database and clear textInput fields. 
+  async function addPersonalInformationToDatabase() {
+        await savePerson(firstName, lastName, age) //save firstname, lastname ang age in the database.
+        props.readPersonalInformation() //Call the readPersonalInformation fucntion from home.js file
+        setFirstName('') //Clear textInputs
         setLastName('')
         setAge('')
     }
@@ -35,7 +37,6 @@ const FormModel = (props)=>{
         setAge('')
         props.modalVisibility(false) //Let's set the state variable setVisibility to false
     }
-
     return(
         <Modal visible={props.visibility}>
             <View style={styles.formstyle}>
@@ -45,14 +46,18 @@ const FormModel = (props)=>{
                 <TextInput style={styles.textInput} onChangeText={lastNameTypeInputHandler} value={lastName}/>
                 <Text>Age</Text>
                 <TextInput 
-                keyboardType='numeric' //
+                keyboardType='numeric'
                 style={styles.textInput} 
                 onChangeText={ageInputHandler} 
                 value={age}/>
             </View>
             <View style={styles.buttonStyle}>
-                <View style={globalStyles.oneButtonStyle}><Button title="OK" onPress={addPersonalInformationToList}/></View>
-                <View style={globalStyles.oneButtonStyle}><Button title="Cancel" onPress={clearTextInput}/></View>
+                <View style={globalStyles.oneButtonStyle}>
+                    <Button title="OK" onPress={addPersonalInformationToDatabase}/>
+                </View>
+                <View style={globalStyles.oneButtonStyle}>
+                    <Button title="Cancel" onPress={clearTextInput}/>
+                </View>
             </View>
         </Modal>
     )

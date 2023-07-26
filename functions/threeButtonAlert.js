@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import {StyleSheet, Alert} from 'react-native';
+import { deletePersonFromDb } from '../database/db';
 
 //Create an alert with three buttons
-const threeButtonAlert = () => {
+const threeButtonAlert = (id) => {
+  console.log("index", id)
     return (Alert.alert('Alert Title', 'My Alert Msg', [
         {
            text: 'OK',
-           onPress: () => console.log('Ok'),
+           onPress: () => {deletePersonFromDb(id)},
          },
          {
            text: 'Cancel',
