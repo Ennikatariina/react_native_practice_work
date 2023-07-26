@@ -9,7 +9,7 @@ export const init=()=>{
         db.transaction((tx)=>{
             tx.executeSql('DROP TABLE IF EXISTS fish', []); //uncomment this if needed - sometimes it is good to empty the table
             //By default, primary key is auto_incremented - we do not add anything to that column
-            tx.executeSql('create table if not exists '+tableName+'(id integer not null primary key, firstname text not null, lastname text not null, age integer not null);',
+            tx.executeSql('create table if not exists '+tableName+'(id integer not null primary key, firstname text not null, lastname text not null, age integer not null, archive );',
             [],//second parameters of execution:empty square brackets - this parameter is not needed when creating table
             //If the transaction succeeds, this is called
             ()=>{

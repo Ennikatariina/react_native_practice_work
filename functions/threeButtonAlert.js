@@ -4,6 +4,7 @@ import { deletePersonFromDb } from '../database/db';
 
 //Create an alert with three buttons
 const threeButtonAlert = (id) => {
+
   console.log("index", id)
     return (Alert.alert('Alert Title', 'My Alert Msg', [
         {

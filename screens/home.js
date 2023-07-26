@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {StyleSheet, Text, View, Button, FlatList,TouchableOpacity, Alert} from 'react-native';
+import {StyleSheet, Text, View, Button, FlatList,TouchableOpacity} from 'react-native';
 import FormModel from '../components/FormModel.js'
 import threeButtonAlert from '../functions/threeButtonAlert.js';
 import { globalStyles } from '../styles/global.js';
@@ -13,15 +13,15 @@ const Home =()=>{
 
     //Reads the information from the database and puts it in the list 
     async function readPersonalInformation () {
-       const allPersonsInformation = await readAllPersons() //Reads the information from the database, returns json array which is set to the const allPersonInformation array.
+      const allPersonsInformation = await readAllPersons() //Reads the information from the database, returns json array which is set to the const allPersonInformation array.
         setPersonsList(allPersonsInformation) //The information in the allPersonInformation array is set to the state variable
-        setVisibility(false) // make the modelForm invisible
+       setVisibility(false) // make the modelForm invisible
     };
-    //Ei toimi
-    useEffect(()=>{
-        renderItem
-        console.log("useEffect")
-    },[readAllPersons])
+    //
+    useEffect(() => {
+       readPersonalInformation(); // Call the function inside useEffect
+        console.log("useEffect");
+    },[setPersonsList]); // ?
 
     //Renders the data in the list one at a time ti the screen
     const renderItem=({item, index}) =>{
@@ -47,7 +47,7 @@ const Home =()=>{
         <View style={styles.container}>
             <FormModel 
                 visibility={visibility} 
-                readPersonalInformation={readPersonalInformation} 
+                readPersonalInformation={readPersonalInformation}
                 modalVisibility={modalVisibility}/>
             <Button style={globalStyles.oneButtonStyle} title="Add person" onPress={()=> {modalVisibility(true)}}/>
             <View style={styles.listStyle}>
