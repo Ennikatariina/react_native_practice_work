@@ -7,9 +7,9 @@ var tableName="person";//Easier to handle, when table name in one place
 export const init=()=>{
     const promise=new Promise((resolve, reject)=>{
         db.transaction((tx)=>{
-            tx.executeSql('DROP TABLE IF EXISTS fish', []); //uncomment this if needed - sometimes it is good to empty the table
+            //tx.executeSql('DROP TABLE IF EXISTS person', []); //uncomment this if needed - sometimes it is good to empty the table
             //By default, primary key is auto_incremented - we do not add anything to that column
-            tx.executeSql('create table if not exists '+tableName+'(id integer not null primary key, firstname text not null, lastname text not null, age integer not null, archive );',
+            tx.executeSql('CREATE TABLE IF NOT EXISTS ' + tableName + ' (id INTEGER NOT NULL PRIMARY KEY, firstname TEXT NOT NULL, lastname TEXT NOT NULL, age INTEGER NOT NULL, archived INTEGER DEFAULT 0);',
             [],//second parameters of execution:empty square brackets - this parameter is not needed when creating table
             //If the transaction succeeds, this is called
             ()=>{
@@ -92,18 +92,16 @@ const fetchAllPerson=()=>{
 };
 
 export async function readAllPersons(){
+
     console.log('readAllPersons')
     try{
       const dbResult = await fetchAllPerson();
-      //console.log("dbResult readAllFish in App.js");
-      console.log(dbResult);
       return(dbResult); // return json array 
     }
     catch(err){
       console.log("Error: "+err);
     }
     finally{
-      console.log("All fish are red - really?");
     }
   }
 
@@ -114,7 +112,7 @@ export async function deletePersonFromDb(id){
     console.log('deletePersonFromDb')
     try{
       const dbResult = await deletePerson(id);
-      await readAllPersons()
+     
     }
     catch(err){
       console.log(err);
@@ -146,3 +144,41 @@ const deletePerson=(id)=>{
     });
     return promise;
 };
+
+//Archived
+const updateArchived =(id) =>{
+  const promise=new Promise((resolve, reject)=>{
+    console.log('archived')
+    db.transaction((tx)=>{
+        //
+        tx.executeSql('UPDATE ' +tableName+ ' SET archived = 1 WHERE id = ?;',
+        //And the values come here
+        [id],
+        //If the transaction succeeds, this is called
+        ()=>{
+                resolve();
+        },
+        //If the transaction fails, this is called
+        (_,err)=>{
+            reject(err);
+        }
+        );
+    });
+});
+return promise;
+} 
+
+export async function updateArchivedFromDb(id){
+  console.log('updateArchivedFromDb')
+  try{
+    const dbResult = await updateArchived(id);
+   
+  }
+  catch(err){
+    console.log(err);
+  }
+  finally{
+    //No need to do anything
+  }
+  
+}

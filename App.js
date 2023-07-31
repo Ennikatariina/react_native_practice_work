@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import {StyleSheet, Text, View, TextInput, Button, Modal, FlatList,TouchableOpacity} from 'react-native';
+import React from 'react';
+import {StyleSheet, View} from 'react-native';
 import Home from './screens/home'
 import { init } from './database/db';
 
@@ -14,7 +14,6 @@ const App = () => {
 
   return(
     <View style={styles.container}>
-      <Text>Testi</Text>
       <Home></Home>
     </View>
   );

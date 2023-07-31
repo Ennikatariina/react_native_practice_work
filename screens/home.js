@@ -3,42 +3,39 @@ import {StyleSheet, Text, View, Button, FlatList,TouchableOpacity} from 'react-n
 import FormModel from '../components/FormModel.js'
 import threeButtonAlert from '../functions/threeButtonAlert.js';
 import { globalStyles } from '../styles/global.js';
-import { readAllPersons } from '../database/db.js';
+import { readAllPersons} from '../database/db.js';
 
 
 const Home =()=>{
 
     const [personsList, setPersonsList]=useState([])
     const [visibility, setVisibility]=useState(false)
-
     //Reads the information from the database and puts it in the list 
     async function readPersonalInformation () {
       const allPersonsInformation = await readAllPersons() //Reads the information from the database, returns json array which is set to the const allPersonInformation array.
         setPersonsList(allPersonsInformation) //The information in the allPersonInformation array is set to the state variable
        setVisibility(false) // make the modelForm invisible
     };
-    //
+
+    //Happens when the application starts
     useEffect(() => {
-       readPersonalInformation(); // Call the function inside useEffect
+      readPersonalInformation(); 
         console.log("useEffect");
-    },[setPersonsList]); // ?
+    },[]); 
 
     //Renders the data in the list one at a time ti the screen
     const renderItem=({item, index}) =>{
         return (
-          <TouchableOpacity onLongPress={()=>threeButtonAlert(item.id) }>
-          <Text style={styles.itemStyle} key={index}>
-            {item.firstname} {item.lastname}, {item.age} vuotta
+            <TouchableOpacity onLongPress={() => threeButtonAlert(item.id, setPersonsList, personsList)}>
+            <Text style={styles.itemStyle} key={index}>
+              {item.firstname} {item.lastname}, {item.age} vuotta
             </Text>
-            </TouchableOpacity>
+          </TouchableOpacity>
         )
       }
-    //TÄTÄ EI VIELÄ KÄYTETÄ
-    //Delete one item from the list and view.
-    const deleteItem=(index) =>{
-        setPersonsList(list=>{return list.filter((person, id)=>{return id!= index})})
-      }
-      //Sets the state variable to true ar false
+      console.log(personsList)
+      
+    //Sets the state variable to true ar false
     const modalVisibility=(value)=>{
         setVisibility(value)     
     }
